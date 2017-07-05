@@ -10,13 +10,9 @@
 #define WU_API_KEY "4ac8a47baa42e48f"
 
 // US ZIP code
-#define WU_LOCATION "33166"
+#define WU_LOCATION "32953"
 
-// 1 minutes between update checks. The free developer account has a limit
-// on the  number of calls so don't go wild.
-#define DELAY_NORMAL    (1*60*1000)
-// 20 minute delay between updates after an error
-#define DELAY_ERROR     (20*60*1000)
+
 
 #define WUNDERGROUND "api.wunderground.com"
 

@@ -6,9 +6,9 @@
 
 #include "wifi_credentials.h"
 #include "W_Underground.h"
+#include "LEDStrip.h"
 
 #define NUMPIXELS 60 // Number of LEDs in strip
-
 #define DATAPIN    D4
 #define CLOCKPIN   D5
 
@@ -17,6 +17,7 @@ bool wifi_connected = true;
 Adafruit_DotStar strip = Adafruit_DotStar(
   NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
 
+LEDStrip ledStrip(strip);
 
 WiFiClient httpclient;
 W_Underground weather(httpclient);
@@ -53,40 +54,52 @@ void setup()
   strip.show();  // Turn all LEDs off ASAP
 }
 
-// Runs 10 LEDs at a time along strip, cycling through red, green and blue.
-// This requires about 200 mA for all the 'on' pixels + 1 mA per 'off' pixel.
-int      head  = 0, tail = -10; // Index of first 'on' and 'off' pixels
-uint32_t color = 0xFF0000;      // 'On' color (starts red)
+uint16_t delayCounter = 0;
+
+#define LED_UPDATE_DELAY 2000
+
+// 5 minutes between update checks. The free developer account has a limit
+// on the  number of calls so don't go wild.
+// #define DELAY_NORMAL    (5*60*1000)
+const uint16_t DELAY_NORMAL = ((1*60*1000) / LED_UPDATE_DELAY);
+
+// 20 minute delay between updates after an error
+// #define DELAY_ERROR     (20*60*1000)
+const uint16_t DELAY_ERROR = ((20*60*1000) / LED_UPDATE_DELAY);
+
+uint16_t weatherDelay = DELAY_NORMAL;
 
 void loop()
 {
-  // TODO check for disconnect from AP
 
-  strip.setPixelColor(head, color); // 'On' pixel at head
-  strip.setPixelColor(tail, 0);     // 'Off' pixel at tail
-  strip.show();                     // Refresh strip
-  delay(20);                        // Pause 20 milliseconds (~50 FPS)
+  if(WiFi.status() == WL_CONNECTED){
 
-  if(++head >= NUMPIXELS) {         // Increment head index.  Off end of strip?
-    head = 0;                       //  Yes, reset head index to start
-    if((color >>= 8) == 0)          //  Next color (R->G->B) ... past blue now?
-      color = 0xFF0000;             //   Yes, reset to red
+    Serial.print("delay counter: ");
+    Serial.println(delayCounter);
+    delayCounter++;
+
+    if (delayCounter >= weatherDelay){
+      if (weather.callWeatherUnderground()) {
+        weather.printWeather();
+        weatherDelay = DELAY_NORMAL;
+        // delay(DELAY_NORMAL);
+      }
+      else {
+        // delay(DELAY_ERROR);
+        Serial.println("Error Weather Underground");
+        weatherDelay = DELAY_ERROR;
+      }
+    }
+
+    // ledStrip.rain();
+    ledStrip.weatherUpdate( weather.getWeather() );
+    delay(LED_UPDATE_DELAY);
   }
-  if(++tail >= NUMPIXELS) tail = 0; // Increment, reset tail index
-
-  // if(WiFi.status() == WL_CONNECTED){
-  //
-  //   if (weather.callWeatherUnderground()) {
-  //     weather.printWeather();
-  //     delay(DELAY_NORMAL);
-  //   }
-  //   else {
-  //     delay(DELAY_ERROR);
-  //   }
-  // }
-  // else{
-  //   printWifiStatus();
-  // }
+  else{
+    printWifiStatus();
+    ledStrip.errorWeather();
+    delay(LED_UPDATE_DELAY);
+  }
 
 }
 

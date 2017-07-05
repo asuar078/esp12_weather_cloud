@@ -14,7 +14,7 @@ bool W_Underground::callWeatherUnderground(){
   // Use WiFiClient class to create TCP connections
   if (!_client.connect(WUNDERGROUND, HTTP_PORT)) {
     Serial.println(F("connection failed"));
-    delay(DELAY_ERROR);
+    // delay(DELAY_ERROR);
     return false;
   }
 
@@ -59,7 +59,7 @@ bool W_Underground::callWeatherUnderground(){
   if (respLen >= sizeof(respBuf)) {
     Serial.print(F("respBuf overflow "));
     Serial.println(respLen);
-    delay(DELAY_ERROR);
+    // delay(DELAY_ERROR);
     return false;
   }
   // Terminate the C string
