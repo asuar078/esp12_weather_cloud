@@ -4,15 +4,14 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
+#include "wunderground_key.h"
 
 // Use your own API key by signing up for a free developer account.
 // http://www.wunderground.com/weather/api/
-#define WU_API_KEY "4ac8a47baa42e48f"
+// #define WU_API_KEY "xxxxxxxxxxxxxxx"
 
 // US ZIP code
 #define WU_LOCATION "32953"
-
-
 
 #define WUNDERGROUND "api.wunderground.com"
 

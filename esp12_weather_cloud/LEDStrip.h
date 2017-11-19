@@ -21,9 +21,11 @@ public:
   void rain(void);
   void cloudy(void);
   void errorWeather(void);
+  void setColor(int color);
 
   // todo
   void thunderStorm(void);
+  void disco(void);
 };
 
 #endif
