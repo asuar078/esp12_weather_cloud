@@ -13,9 +13,10 @@ the ESP12E the following libraries are required.
 
 ## Weather Underground
 
-Weather data is pulled from the Weather Underground API. In the **W_Underground.h**
-file a Weather Underground API key needs to be provided. This is a free
-service that any developer can get.
+Weather data is pulled from the Weather Underground API. A **wunderground_key.h**
+file needs to be created and Weather Underground API key needs to be provided
+using the keyword **WU_API_KEY**.
+This is a free service that any developer can get.
 
 ## BOM
 
@@ -40,3 +41,9 @@ Need to create a `wifi_credentials.h` file to pass WiFi credentials.
 
 #endif
 ```
+
+## Android Color Picker
+
+There is also an Android application that can be used to select different modes
+and colors for the cloud see [android app](https://github.com/asuar078/weather_cloud_color_picker).
+The android phone and cloud must be on the same network for the application to work.
