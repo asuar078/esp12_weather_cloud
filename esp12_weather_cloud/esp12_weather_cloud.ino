@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 #include <Adafruit_DotStar.h>
 #include <SPI.h>
@@ -11,6 +12,7 @@
 #define NUMPIXELS 60 // Number of LEDs in strip
 #define DATAPIN    D4
 #define CLOCKPIN   D5
+#define SERVER_PORT 1133
 
 bool wifi_connected = true;
 
@@ -50,6 +52,16 @@ void setup()
 
   printWifiStatus();
 
+    // start MDNS
+  if (!MDNS.begin("esp8266")) {
+    Serial.println("Error setting up MDNS responder!");
+    while(1) { delay(1000); }
+  }
+  Serial.println("mDNS responder started");
+
+  // Add service to MDNS-SD
+  MDNS.addService("http", "tcp", SERVER_PORT);
+
   strip.begin(); // Initialize pins for output
   strip.show();  // Turn all LEDs off ASAP
 }
@@ -79,9 +91,11 @@ void loop()
     delayCounter++;
 
     if (delayCounter >= weatherDelay){
+      Serial.println("Calling weather underground");
       if (weather.callWeatherUnderground()) {
         weather.printWeather();
         weatherDelay = DELAY_NORMAL;
+        delayCounter = 0;
         // delay(DELAY_NORMAL);
       }
       else {
