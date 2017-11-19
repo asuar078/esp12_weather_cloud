@@ -3,3 +3,4 @@
 .clang_complete
 .gcc-flags.json
 wifi_credentials.h
+wunderground_key.h
