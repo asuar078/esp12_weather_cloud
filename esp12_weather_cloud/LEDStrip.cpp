@@ -126,9 +126,11 @@ void LEDStrip::rain(void){
 
   strip.show();
 }
+
 void LEDStrip::thunderStorm(void){
 
 }
+
 void LEDStrip::cloudy(void){
   int i;
   for(i=0; i< 15; i++) {
@@ -152,4 +154,21 @@ void LEDStrip::errorWeather(void){
     strip.setPixelColor(i, 10, 255, 10);
   }
     strip.show(); //show all the colors that were set in cloud one
+}
+
+void LEDStrip::setColor(int color){
+
+  byte red = ((color >> 16) & 0xFF);  // Extract the RR byte
+  byte green = ((color >> 8) & 0xFF);   // Extract the GG byte
+  byte blue = ((color) & 0xFF);        // Extract the BB byte
+
+  // todo: remove
+  // String colors = "red " + (String)red + " green " + (String)green + " blue " + (String)blue;
+  // Serial.println(colors);
+
+  for (int i = 0; i < strip.numPixels(); i++){ //for all the LEDs
+    strip.setPixelColor(i, green, red, blue);
+  }
+
+  strip.show();
 }
