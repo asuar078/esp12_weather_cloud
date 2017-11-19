@@ -215,8 +215,9 @@ void printWifiStatus() {
 // Handle server request
 void handleSetting() {
 
+Serial.println("Incoming message");
   if (server.hasArg("plain")== false){ //Check if body received
-    server.send(200, "text/plain", "Body not received");
+    server.send(200, "text/plain", "Body not received\n\n");
     return;
   }
 
@@ -225,11 +226,11 @@ void handleSetting() {
 
   if (!data.success()) {
     Serial.println("parseObject() failed");
-    server.send(200, "text/plain", "json parse error");
+    server.send(200, "text/plain", "json parse error\n\n");
     return;
   }
 
-  server.send(200, "text/plain", "received");
+  server.send(200, "text/plain", "received\n\n");
 
   data.printTo(Serial);
   mode = data["mode"];
